@@ -1,76 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="16dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="16dp"
-    tools:context=".MainActivity" >
+    tools:context="com.example.android.sample.calculator.MainActivity">
 
-    <EditText
-        android:id="@+id/numberInput1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="数字を入力"
-        android:inputType="number" />
-
-    <Button
-        android:id="@+id/calcButton1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/numberInput1"
-        android:layout_toEndOf="@id/numberInput1"
-        android:text="計算" />
-
-    <Spinner
-        android:id="@+id/operatorSelector"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/calcButton1"
-        android:layout_alignEnd="@id/numberInput1"
-        android:layout_marginTop="35dp" />
+        android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/numberInput2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/operatorSelector"
-        android:layout_alignEnd="@id/numberInput1"
-        android:layout_marginTop="35dp"
-        android:ems="10"
-        android:hint="数字を入力"
-        android:inputType="number" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="35dp"
+            android:paddingBottom="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="16dp"
+            tools:context=".MainActivity" >
 
-    <Button
-        android:id="@+id/calcButton2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/numberInput2"
-        android:layout_toEndOf="@id/numberInput2"
-        android:text="計算" />
+            <EditText
+                android:id="@+id/numberInput1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:ems="10"
+                android:hint="@string/hint_input_number"
+                android:inputType="number" />
 
-    <TextView
-        android:id="@+id/calcResult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/numberInput2"
-        android:layout_alignEnd="@id/numberInput2"
-        android:layout_marginTop="35dp"
-        android:text="=計算結果"
-        android:textColor="#000000"
-        android:textSize="18sp" />
+            <Button
+                android:id="@+id/calcButton1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/numberInput1"
+                android:layout_toEndOf="@id/numberInput1"
+                android:text="@string/button_calc" />
 
-    <Button
-        android:id="@+id/nextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/calcResult"
-        android:layout_alignEnd="@id/calcButton2"
-        android:layout_marginTop="35dp"
-        android:text="続けて計算する" />
-</RelativeLayout>
+            <Spinner
+                android:id="@+id/operatorSelector"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/calcButton1"
+                android:layout_alignEnd="@id/numberInput1"
+                android:layout_marginTop="35dp" />
+
+            <EditText
+                android:id="@+id/numberInput2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/operatorSelector"
+                android:layout_alignEnd="@id/numberInput1"
+                android:layout_marginTop="35dp"
+                android:ems="10"
+                android:hint="@string/hint_input_number"
+                android:inputType="number" />
+
+            <Button
+                android:id="@+id/calcButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/numberInput2"
+                android:layout_toEndOf="@id/numberInput2"
+                android:text="@string/button_calc" />
+
+            <TextView
+                android:id="@+id/calcResult"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/numberInput2"
+                android:layout_alignEnd="@id/numberInput2"
+                android:layout_marginTop="35dp"
+                android:text="@string/calc_result_default"
+                android:textColor="#000000"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/nextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/calcResult"
+                android:layout_alignEnd="@id/calcButton2"
+                android:layout_marginTop="35dp"
+                android:text="button_nex" />
+        </RelativeLayout>
+
+    </ScrollView>
+</FrameLayout>
