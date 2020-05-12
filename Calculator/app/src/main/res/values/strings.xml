@@ -1,12 +1,12 @@
 <resources>
-    <string name="app_name">かんたん計算機</string>
-    <string name="hint_input_number">数字を入力</string>
-    <string name="button_calc">計算</string>
+    <string name="app_name">Easy Calculator</string>
+    <string name="hint_input_number">input number</string>
+    <string name="button_calc">calculate</string>
     <string name="calc_result_text">=%1$d</string>
-    <string name="calc_result_default">=計算結果</string>
-    <string name="button_next">続けて計算する</string>
-    <string name="title_another_calc">別画面で計算中</string>
-    <string name="button_back">戻る</string>
+    <string name="calc_result_default">= result</string>
+    <string name="button_next">continue</string>
+    <string name="title_another_calc">Calculating in another activity</string>
+    <string name="button_back">return</string>
     <string name="plus">＋</string>
     <string name="minus">−</string>
     <string name="multiply">×</string>
