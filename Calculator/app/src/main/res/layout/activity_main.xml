@@ -44,6 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/calcButton1"
                 android:layout_alignEnd="@id/numberInput1"
+                android:entries="@array/operators"
                 android:layout_marginTop="35dp" />
 
             <EditText
