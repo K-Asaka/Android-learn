@@ -84,7 +84,7 @@
                 android:layout_below="@id/calcResult"
                 android:layout_alignEnd="@id/calcButton2"
                 android:layout_marginTop="35dp"
-                android:background="@drawable/button_background"
+                android:background="@drawable/button_background_ripple"
                 android:text="button_nex" />
         </RelativeLayout>
 
