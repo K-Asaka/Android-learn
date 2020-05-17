@@ -14,7 +14,7 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 public class MemoFragment extends Fragment {
-    private MemoEditText mMemoEdittext;
+    private MemoEditText mMemoEditText;
     private Uri mMemoUri = null;
 
     @Override
@@ -23,7 +23,7 @@ public class MemoFragment extends Fragment {
         // レイアウトXMLからViewを作成
         View view = inflater.inflate(R.layout.fragment_memo, container, false);
 
-        mMemoEdittext = (MemoEditText)view.findViewById(R.id.Memo);
+        mMemoEditText = (MemoEditText)view.findViewById(R.id.Memo);
 
         return view;
     }
