@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/settings_screen">
+        <!-- 色の反転 -->
+        <SwitchPreference
+            android:title="@string/settings_screen_color_reverse"
+            android:key="@string/key_screen_reverse"
+            android:defaultValue="false"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/settings_file">
+        <!-- ファイル名のプレフィックス -->
+        <EditTextPreference
+            android:title="@string/settings_file_name_prefix"
+            android:key="@string/key_file_name_prefix"
+            android:defaultValue="@string/settings_file_name_prefix_default"
+            android:dialogTitle="@string/settings_file_name_prefix_dialog_title"
+            android:dialogMessage="@string/settings_file_name_prefix_dialog_message"
+            android:maxLength="@integer/file_name_prefix_length_max"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/settings_text">
+        <!-- 文字サイズ -->
+        <ListPreference
+            android:title="@string/settings_text_size"
+            android:key="@string/key_text_style"
+            android:entries="@array/text_style_labels"
+            android:entryValues="@array/text_style_values"
+            android:dialogTitle="@string/settings_text_style_dialog_title"/>
+    </PreferenceCategory>
+</PreferenceScreen>
