@@ -3,14 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
     <fragment
-        android:id="@+id/LoadFragment"
+        android:id="@+id/MemoFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="com.example.android.sample.mymemoapp.MemoLoadFragment"
-        tools:layout="@android:layout/list_content" />
+        android:name="com.example.android.sample.mymemoapp.MemoFragment"
+        tools:layout="@layout/fragment_memo" />
 
 </FrameLayout>
