@@ -6,4 +6,6 @@
     <string name="permission_memo_write_description">作成したメモ情報を編集します</string>
     <string name="memo_hint">メモを入力</string>
     <string name="memo_create">新規作成する</string>
+    <string name="action_settings">設定</string>
+    <string name="action_save">保存</string>
 </resources>
