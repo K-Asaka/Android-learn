@@ -42,7 +42,7 @@ public class SettingFragment extends PreferenceFragment
     }
 
     // 装飾のサマリーを更新する
-    private void setTypefaceSummary(SharedPreferences prefs) {
+    private void setTypefaceSummary(SharedPreferences sharedPreferences) {
         // Preferenceのキーを取得
         String key = getActivity().getString(R.string.key_text_style);
 
@@ -50,14 +50,14 @@ public class SettingFragment extends PreferenceFragment
         Preference preference = findPreference(key);
 
         // 現在選択されている値を取得
-        Set<String> selected = prefs.getStringSet(key, Collections.<String>emptySet());
+        Set<String> selected = sharedPreferences.getStringSet(key, Collections.<String>emptySet());
 
         // サマリーを設定
         preference.setSummary(TextUtils.join("/", selected.toArray()));
     }
 
     // プレフィックスのサマリーを更新する
-    private void setPrefixSummary(SharedPreferences prefs) {
+    private void setPrefixSummary(SharedPreferences sharedPreferences) {
         // Preferenceのキーを取得
         String key = getActivity().getString(R.string.key_file_name_prefix);
 
@@ -65,7 +65,7 @@ public class SettingFragment extends PreferenceFragment
         Preference preference = findPreference(key);
 
         // 現在選択されている値を取得
-        String prefix = prefs.getString(key, "");
+        String prefix = sharedPreferences.getString(key, "");
 
         // サマリーを設定
         preference.setSummary(prefix);
@@ -105,23 +105,5 @@ public class SettingFragment extends PreferenceFragment
         } else if (activity.getString(R.string.key_file_name_prefix).equals(key)) {
             setPrefixSummary(sharedPreferences);
         }
-    }
-
-    private void setTypefaceSummary(SharedPreferences sharedPreferences) {
-        String key = getActivity().getString(R.string.key_text_style);
-
-        Preference preference = findPreference(key);
-
-        Set<String> selected = sharedPreferences.getStringSet(key, Collections.<String>emptySet());
-        preference.setSummary(TextUtils.join("/", selected.toArray()));
-    }
-
-    private void setPrefixSummary(SharedPreferences sharedPreferences) {
-        String key = getActivity().getString(R.string.key_file_name_prefix);
-
-        Preference preference = findPreference(key);
-
-        String prefix = sharedPreferences.getString(key, "");
-        preference.setSummary(prefix);
     }
 }
