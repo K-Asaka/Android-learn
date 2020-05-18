@@ -9,7 +9,7 @@
     android:layout_height="match_parent"
     android:singleLine="false"
     android:gravity="start|top"
-    android:hint="@string/memo.hint"
+    android:hint="@string/memo_hint"
     android:textSize="@dimen/settings.text.size.default"
     android:padding="@dimen/activity_horizontal_margin"
     android:background="@android:color/transparent" />
