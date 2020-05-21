@@ -24,9 +24,18 @@
         <!-- 文字サイズ -->
         <ListPreference
             android:title="@string/settings_text_size"
+            android:key="@string/key_text_size"
+            android:entries="@array/text_size_labels"
+            android:entryValues="@array/text_size_values"
+            android:dialogTitle="@string/settings_text_size_dialog_title" />
+
+        <!-- 文字装飾 -->
+        <MultiSelectListPreference
+            android:title="@string/settings_text_style"
             android:key="@string/key_text_style"
             android:entries="@array/text_style_labels"
             android:entryValues="@array/text_style_values"
             android:dialogTitle="@string/settings_text_style_dialog_title"/>
     </PreferenceCategory>
+
 </PreferenceScreen>

@@ -12,4 +12,4 @@
     android:hint="@string/memo_hint"
     android:textSize="@dimen/settings.text.size.default"
     android:padding="@dimen/activity_horizontal_margin"
-    android:background="@android:color/transparent" />
+    android:background="@android:color/transparent"/>

@@ -3,18 +3,18 @@ package com.example.android.sample.mymemoapp;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.text.TextUtils;
 
 import java.util.Collections;
 import java.util.Set;
 
+/**
+ * SharedPreferencesと、設定値がほしいクラスの橋渡しをする
+ */
 public class SettingPrefUtil {
+
     // 保存先ファイル名
     public static final String PREF_FILE_NAME = "settings";
-
-    // ファイル名プレフィックスのKEY
-    private static final String KEY_FILE_NAME_PREFIX = "file.name.prefix";
-    // 未設定時のデフォルト値
-    private static final String KEY_FILE_NAME_PREFIX_DEFAULT = "memo";
 
     private static final String KEY_TEXT_SIZE = "text.size";
     public static final String TEXT_SIZE_LARGE = "large";
@@ -25,17 +25,15 @@ public class SettingPrefUtil {
     public static final String TEXT_STYLE_BOLD = "bold";
     public static final String TEXT_STYLE_ITALIC = "italic";
 
+    // ファイル名プレフィックスのKEY
+    private static final String KEY_FILE_NAME_PREFIX = "file.name.prefix";
+    // 未設定時のデフォルト値
+    private static final String KEY_FILE_NAME_PREFIX_DEFAULT = "memo";
+
     private static final String KEY_SCREEN_REVERSE = "screen.reverse";
 
-    // ファイル名プレフィックスの値を取得する
-    public static String getFileNamePrefix(Context context) {
-        // SharedPreferencesを取得
-        SharedPreferences sp = context.getSharedPreferences(
-                PREF_FILE_NAME, Context.MODE_PRIVATE);
-
-        // SharedPreferencesから設定値を取得する
-        return sp.getString(KEY_FILE_NAME_PREFIX, KEY_FILE_NAME_PREFIX_DEFAULT);
-    }
+    // Utilクラスのため、インスタンスを作成させない
+    private SettingPrefUtil() {}
 
     // フォントサイズを取得する
     public static float getFontSize(Context context) {
@@ -57,7 +55,7 @@ public class SettingPrefUtil {
                 return context.getResources().getDimension(
                         R.dimen.settings_text_size_small);
             default:
-                return context.getResources().getDimensino(
+                return context.getResources().getDimension(
                         R.dimen.settings_text_size_medium);
         }
     }
@@ -66,15 +64,14 @@ public class SettingPrefUtil {
     public static int getTypeface(Context context) {
         SharedPreferences sp = context.getSharedPreferences(
                 PREF_FILE_NAME, Context.MODE_PRIVATE);
-        Set<String> storedTypeface = sp.getStringSet(KEY_TEXT_STYLE,
-                Collections.<String>emptySet());
+        Set<String> storedTypeface = sp.getStringSet(KEY_TEXT_STYLE, Collections.<String>emptySet());
 
         // EditTextに設定するビットフラグに変換する
         int typefaceBit = Typeface.NORMAL;
-        for (String value : storedTypeface) {
+        for(String value : storedTypeface) {
             switch (value) {
                 case TEXT_STYLE_ITALIC:
-                    typefacebit |= Typeface.ITALIC;
+                    typefaceBit |= Typeface.ITALIC;
                     break;
                 case TEXT_STYLE_BOLD:
                     typefaceBit |= Typeface.BOLD;
@@ -85,10 +82,21 @@ public class SettingPrefUtil {
         return typefaceBit;
     }
 
+    // ファイル名プレフィックスの値を取得する
+    public static String getFileNamePrefix(Context context) {
+        // SharedPreferencesを取得
+        SharedPreferences sp = context.getSharedPreferences(
+                PREF_FILE_NAME, Context.MODE_PRIVATE);
+
+        // SharedPreferencesから設定値を取得する。
+        return sp.getString(KEY_FILE_NAME_PREFIX, KEY_FILE_NAME_PREFIX_DEFAULT);
+    }
+
     // 画面の明暗を反転するかどうか
     public static boolean isScreenReverse(Context context) {
         SharedPreferences sp = context.getSharedPreferences(
                 PREF_FILE_NAME, Context.MODE_PRIVATE);
         return sp.getBoolean(KEY_SCREEN_REVERSE, false);
     }
+
 }

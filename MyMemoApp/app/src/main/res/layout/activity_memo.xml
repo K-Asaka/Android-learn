@@ -10,6 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:name="com.example.android.sample.mymemoapp.MemoFragment"
-        tools:layout="@layout/fragment_memo" />
+        tools:layout="@layout/fragment_memo"/>
 
 </FrameLayout>

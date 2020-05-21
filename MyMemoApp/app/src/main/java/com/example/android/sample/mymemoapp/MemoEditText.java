@@ -1,6 +1,5 @@
 package com.example.android.sample.mymemoapp;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -9,21 +8,25 @@ import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.EditText;
 
-@SuppressLint("AppCompatCustomView")
+/**
+ * 罫線を表示するEditText
+ */
 public class MemoEditText extends EditText {
 
-    // ビットマスクmView
+    // ビットマスク
     // 直線
-    private static final int SOLID = 1;
+    private static final int SOLID  = 1;
     // 破線
-    private static final int DASH = 2;
+    private static final int DASH  = 2;
     // 通常の太さ
-    private static final int NORMAL = 4;
+    private static final int NORMAL  = 4;
     // 太線
-    private static final int BOLD = 8;
+    private static final int BOLD  = 8;
 
     // このViewの横幅
     private int mMeasuredWidth;
@@ -56,32 +59,35 @@ public class MemoEditText extends EditText {
     // 初期設定を行う。
     // インスタンスの生成などを、onDraw()内で行うべきではない
     private void init(Context context, AttributeSet attrs) {
-        // Pathは、複数の直線や曲線などの情報をカプセル化する
+        // Pathは、複数の直線や曲線などの情報をカプセル化します
         mPath = new Path();
+        // Paintは、「どのように描画するか」を保持します
+        mPaint = new Paint();
 
-        // Paint.Style.STROKEは塗りつぶしなしで、輪郭線を描画するスタイル
+        // Paint.Style.STROKEは塗りつぶしなしで、輪郭線を描画するスタイルです
         mPaint.setStyle(Paint.Style.STROKE);
 
-        // インスタンス生成時に、属性情報が渡されている場合
-        // かつ、Android Studioのプレビュー表示ではない場合
         if (attrs != null && !isInEditMode()) {
-            // 属性情報を取得
+            // 属性情報を取得します
             int lineEffectBit;
             int lineColor;
 
             Resources resources = context.getResources();
-            TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MemoEditText);
+            TypedArray typedArray = context.obtainStyledAttributes(
+                    attrs, R.styleable.MemoEditText);
 
             try {
-                // 属性に設定された値を取得
-                lineEffectBit = typedArray.getInteger(R.styleable.MemoEditText_lineEffect, SOLID);
-                lineColor = typedArray.getColor(R.styleable.MemoEditText_lineColor, Color.GRAY);
+                // 属性に設定された値を取得します。
+                lineEffectBit = typedArray.getInteger(
+                        R.styleable.MemoEditText_lineEffect, SOLID);
+                lineColor = typedArray.getColor(
+                        R.styleable.MemoEditText_lineColor, Color.GRAY);
             } finally {
-                // 必ずrecycle()を呼ぶ
+                // 必ずrecycle()を呼びましょう
                 typedArray.recycle();
             }
 
-            // 罫線のエフェクトを設定
+            // 罫線のエフェクトを設定します。
             if ((lineEffectBit & DASH) == DASH) {
                 // 破線が設定されている場合
                 DashPathEffect effect = new DashPathEffect(new float[]{
@@ -94,27 +100,18 @@ public class MemoEditText extends EditText {
             float strokeWidth;
             if ((lineEffectBit & BOLD) == BOLD) {
                 // 太線が設定されている場合
-                strokeWidth = resources.getDimension(R.dimen.text_rule_width_bold);
+                strokeWidth = resources.getDimension(
+                        R.dimen.text_rule_width_bold);
             } else {
-                strokeWidth = resources.getDimension(R.dimen.text_rule_width_normal);
+                strokeWidth = resources.getDimension(
+                        R.dimen.text_rule_width_normal);
             }
             mPaint.setStrokeWidth(strokeWidth);
+
+            // 色を指定します
+            mPaint.setColor(lineColor);
+
         }
-    }
-
-    @Override
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        // 横幅
-        mMeasuredWidth = getMeasuredWidth();
-        // 高さ
-        int measuredHeight = getMeasuredHeight();
-        // 1行の高さ
-        mLineHeight = getLineHeight();
-
-        // 画面内に何行表示できるか
-        mDisplayLineCount = measuredHeight / mLineHeight;
     }
 
     @Override
@@ -129,7 +126,7 @@ public class MemoEditText extends EditText {
         int lastVisibleLine = firstVisibleLine + mDisplayLineCount;
 
         mPath.reset();
-        for (int i = firstVisibleLine; i <= lastVisibleLine; i++) {
+        for( int i = firstVisibleLine; i <= lastVisibleLine; i++ ){
             // 行の左端に移動
             mPath.moveTo(0, i * mLineHeight + paddingTop);
             // 右端へ線を引く
@@ -139,6 +136,21 @@ public class MemoEditText extends EditText {
         canvas.drawPath(mPath, mPaint);
 
         super.onDraw(canvas);
+    }
+
+    @Override
+    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        // 横幅
+        mMeasuredWidth = getMeasuredWidth();
+        // 縦幅
+        int measuredHeight = getMeasuredHeight();
+        // 1行の高さ
+        mLineHeight = getLineHeight();
+
+        // 画面内に何行表示できるか
+        mDisplayLineCount = measuredHeight / mLineHeight;
     }
 
 }

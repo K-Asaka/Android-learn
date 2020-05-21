@@ -1,6 +1,5 @@
 package com.example.android.sample.mymemoapp;
 
-import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -15,9 +14,12 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Calendar;
-import java.util.Currency;
 
+/**
+ * MemoProviderと、Memo情報を必要とするクラスの橋渡しをする
+ */
 public class MemoRepository {
 
     // ファイル名フォーマット prefix-yyyy-mm-dd-HH-MM-SS.txt
@@ -26,14 +28,78 @@ public class MemoRepository {
     // インスタンスを作らせない
     private MemoRepository() {}
 
+    // メモを新規に保存する
+    public static Uri create(Context context, String memo) {
+
+        // 出力先ディレクトリを取得
+        File outputDir = getOutputDir(context);
+
+        if (outputDir == null) {
+            // 何らかの原因でディレクトリが見つからなかった
+            return null;
+        }
+
+        File outputFile = getFileName(context, outputDir);
+
+        if (outputFile == null
+                || !writeToFile(outputFile, memo)) {
+            // ファイルの書き込みに失敗した場合
+            return null;
+        }
+
+        String title = memo.length() > 10 ? memo.substring(0, 10) : memo;
+
+        ContentValues values = new ContentValues();
+        values.put(MemoDBHelper.TITLE, title);
+        values.put(MemoDBHelper.DATA, outputFile.getAbsolutePath());
+        values.put(MemoDBHelper.DATE_ADDED, System.currentTimeMillis());
+
+        return context.getContentResolver().insert(MemoProvider.CONTENT_URI, values);
+    }
+
+    // 既存のメモを更新する
+    public static int update(Context context, Uri uri, String memo) {
+
+        String id = uri.getLastPathSegment();
+
+        Cursor cursor = context.getContentResolver().query(uri,
+                new String[]{MemoDBHelper.DATA}, MemoDBHelper._ID + " = ?", new String[]{id}, null);
+
+        if (cursor == null) {
+            return 0;
+        }
+
+        String filePath = null;
+        while (cursor.moveToNext()) {
+            filePath = cursor.getString(cursor.getColumnIndex(MemoDBHelper.DATA));
+        }
+
+        cursor.close();
+
+        if (TextUtils.isEmpty(filePath)) {
+            return 0;
+        }
+
+        File outputFile = new File(filePath);
+
+        if (writeToFile(outputFile, memo)) {
+            // ファイルの書き込みに失敗した場合
+            return 0;
+        }
+
+        return 1;
+    }
+
     // メモの出力先ディレクトリを取得する
     private static File getOutputDir(Context context) {
         File outputDir;
 
         if (Build.VERSION.SDK_INT >= 19) {
-            outputDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+            outputDir = context.getExternalFilesDir(
+                    Environment.DIRECTORY_DOCUMENTS);
         } else {
-            outputDir = new File(context.getExternalFilesDir(null), "Documents");
+            outputDir = new File(context.getExternalFilesDir(null),
+                    "Documents");
         }
 
         if (outputDir == null) {
@@ -43,12 +109,14 @@ public class MemoRepository {
 
         boolean isExist = true;
 
-        if (!outputDir.exists() || !outputDir.isDirectory()) {
-            isExist = outputDir.mkdir();
+        if (!outputDir.exists()
+                || !outputDir.isDirectory()) {
+            isExist = outputDir.mkdirs();
         }
 
         if (isExist) {
             return outputDir;
+
         } else {
             // ディレクトリの作成に失敗した場合
             return null;
@@ -73,9 +141,11 @@ public class MemoRepository {
             writer = new FileWriter(outputFile);
             writer.write(memo);
             writer.flush();
+
         } catch (IOException e) {
             e.printStackTrace();
             return false;
+
         } finally {
             if (writer != null) {
                 try {
@@ -85,74 +155,8 @@ public class MemoRepository {
                 }
             }
         }
+
         return true;
-    }
-
-    // メモを新規に保存する
-    public static Uri create(Context context, String memo) {
-
-        // 出力先ディレクトリを取得
-        File outputDir = getOutputDir(context);
-
-        if (outputDir == null) {
-            // 何らかの原因でディレクトリが見つからなかった
-            return null;
-        }
-
-        // 出力先ファイル名を決定する
-        File outputFile = getFileName(context, outputDir);
-        if (outputFile == null || !writeToFile(outputFile, memo)) {
-            // ファイルの書き込みに失敗した場合
-            return null;
-        }
-
-        // メモのタイトルは、文章の内容から決定します
-        String title = memo.length() > 10 ? memo.substring(0, 10) : memo;
-
-        // データベースに登録するその他の情報
-        ContentValues values = new ContentValues();
-        values.put(MemoDBHelper.TITLE, title);
-        values.put(MemoDBHelper.DATA, outputFile.getAbsolutePath());
-        values.put(MemoDBHelper.DATE_ADDED, System.currentTimeMillis());
-
-        // コンテントプロバイダに挿入する
-        return context.getContentResolver().insert(MemoProvider.CONTENT_URI, values);
-    }
-
-    // 既存のメモを更新する
-    public static int update(Context context, Uri uri, String memo) {
-        // 引数のURIをもとに、まずはデータベースから検索する
-        // ID部分
-        String id = uri.getLastPathSegment();
-        // 検索する
-        Cursor cursor = context.getContentResolver().query(uri,
-                new String[]{MemoDBHelper.DATA}, MemoDBHelper._ID + " = ?",
-                new String[]{id}, null);
-
-        if (cursor == null) {
-            return 0;
-        }
-
-        String filePath = null;
-        while (cursor.moveToNext()) {
-            filePath = cursor.getString(cursor.getColumnIndex(
-                    MemoDBHelper.DATA));
-        }
-
-        cursor.close();
-
-        if (TextUtils.isEmpty(filePath)) {
-            return 0;
-        }
-
-        File outputFile = new File(filePath);
-
-        if (writeToFile(outputFile, memo)) {
-            // ファイルの書き込みに失敗した場合
-            return 0;
-        }
-
-        return 1;
     }
 
     // メモを読み込む
@@ -160,10 +164,9 @@ public class MemoRepository {
         BufferedReader reader = null;
         StringBuilder builder = new StringBuilder();
         try {
-            InputStream inputStream =
-                    context.getContentResolver().openInputStream(uri);
+            InputStream inputStream = context.getContentResolver().openInputStream(uri);
             if (inputStream != null) {
-                reader = new BufferedReader(new InputStream(inputStream));
+                reader = new BufferedReader(new InputStreamReader(inputStream));
 
                 String line;
                 while ((line = reader.readLine()) != null) {
@@ -171,14 +174,17 @@ public class MemoRepository {
                     builder.append("\n");
                 }
             }
+
         } catch (FileNotFoundException fnfe) {
             // ファイルが削除されるなどして見つからなかった場合
             fnfe.printStackTrace();
             return context.getString(R.string.error_memo_file_not_found);
+
         } catch (IOException ioe) {
             // ファイルの読み込みに失敗した場合
             ioe.printStackTrace();
             return context.getString(R.string.error_memo_file_load_failed);
+
         } finally {
             if (reader != null) {
                 try {
@@ -188,14 +194,14 @@ public class MemoRepository {
                 }
             }
         }
+
         return builder.toString();
     }
 
-    // メモの一覧を取得
+    // メモの一覧を取得します
     public static Cursor query(Context context) {
         return context.getContentResolver().query(
                 MemoProvider.CONTENT_URI,
                 null, null, null, MemoDBHelper.DATE_MODIFIED + " DESC");
-        )
     }
 }

@@ -8,10 +8,14 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
+/**
+ * メモの一覧用Adapter
+ */
 public class MemoAdapter extends CursorAdapter {
+
     private LayoutInflater mInflater;
 
-    // このアダプターで使用するViewHolder
+    //このアダプターで使用するViewHolder
     static class ViewHolder {
         TextView title;
         TextView lastModified;
@@ -37,18 +41,22 @@ public class MemoAdapter extends CursorAdapter {
 
         // タグとして入れておく
         view.setTag(holder);
+
         return view;
     }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         // データを得る
-        String title = cursor.getString(cursor.getColumnIndex(MemoDBHelper.TITLE));
-        String lastModified = cursor.getString(cursor.getColumnIndex(MemoDBHelper.DATE_MODIFIED));
+        String title = cursor.getString(
+                cursor.getColumnIndex(MemoDBHelper.TITLE));
+        String lastModified = cursor.getString(
+                cursor.getColumnIndex(MemoDBHelper.DATE_MODIFIED));
 
         // データを設定する
         ViewHolder holder = (ViewHolder)view.getTag();
         holder.title.setText(title);
         holder.lastModified.setText(lastModified);
     }
+
 }
