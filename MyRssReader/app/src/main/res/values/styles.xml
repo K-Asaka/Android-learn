@@ -8,4 +8,53 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- テキスト表示のスタイル -->
+    <style name="Text" />
+
+    <!-- テキスト(大) -->
+    <style name="Text.Large" parent="Text">
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorPrimaryText</item>
+    </style>
+
+    <!-- テキスト(中) -->
+    <style name="Text.Medium" parent="Text">
+        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:textColor">@color/colorSecondaryText</item>
+    </style>
+
+    <!-- テキスト(小) -->
+    <style name="Text.Small" parent="Text">
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="android:textColor">@color/colorSecondaryText</item>
+    </style>
+
+    <!-- リストアイテム用のスタイル -->
+    <style name="List" />
+
+    <!-- リストアイテムのタイトルのスタイル -->
+    <style name="List.Title" parent="List">
+        <item name="android:textAppearance">@style/Text.Large</item>
+        <item name="android:singleLine">false</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <!-- リンク一覧のdescriptionのスタイル -->
+    <style name="List.Description" parent="List">
+        <item name="android:textAppearance">@style/Text.Small</item>
+        <item name="android:maxLines">3</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+    </style>
+
+    <!-- リストアイテムのサブテキストのスタイル -->
+    <style name="List.SubText" parent="List">
+        <item name="android:textAppearance">@style/Text.Medium</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
 </resources>
