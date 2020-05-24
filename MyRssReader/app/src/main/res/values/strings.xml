@@ -1,48 +1,19 @@
 <resources>
-    <string name="app_name">MyMemoApp</string>
+    <string name="app_name">MyRssReader</string>
+    <string name="add_site">サイトを登録する</string>
 
-    <string name="action_settings">設定</string>
-    <string name="action_save">保存</string>
-    <string name="action_load">読み込み</string>
+    <string name="link_publish_date">%1$tm/%1$td %1$tH:%1$tM</string>
 
-    <!-- 文字の設定 -->
-    <string name="settings_text">文字の設定</string>
-    <!-- フォントサイズ -->
-    <string name="settings_text_size">フォントサイズ</string>
-    <string name="settings_text_size_large">大</string>
-    <string name="settings_text_size_medium">中</string>
-    <string name="settings_text_size_small">小</string>
-    <string name="settings_text_size_dialog_title">フォントサイズの選択</string>
+    <string name="site_link_count">%1$d 記事</string>
 
-    <!-- タイプフェイス -->
-    <string name="settings_text_style">装飾</string>
-    <string name="settings_text_style_italic">イタリック</string>
-    <string name="settings_text_style_bold">太字</string>
-    <string name="settings_text_style_dialog_title">文字装飾の選択</string>
-
-    <!-- 画面の設定 -->
-    <string name="settings_screen">画面の設定</string>
-    <!-- 色の反転 -->
-    <string name="settings_screen_color_reverse">色の反転</string>
-
-    <!-- ファイルの設定 -->
-    <string name="settings_file">ファイルの設定</string>
-
-    <!-- ファイル名のプレフィックス -->
-    <string name="settings_file_name_prefix">プレフィックス</string>
-    <string name="settings_file_name_prefix_default">memo</string>
-    <string name="settings_file_name_prefix_dialog_title">ファイル名のプレフィックス</string>
-    <string name="settings_file_name_prefix_dialog_message">ファイル名のプレフィックスを入力して下さい。</string>
-
-    <string name="memo_hint">メモを入力</string>
-    <string name="memo_create">新規作成する</string>
-
-    <string name="permission_memo_read_label">メモ情報の読み取り</string>
-    <string name="permission_memo_read_description">作成したメモの情報を読み取ります</string>
-    <string name="permission_memo_write_label">メモ情報の編集</string>
-    <string name="permission_memo_write_description">作成したメモ情報を編集します</string>
-
-    <string name="error_memo_file_not_found">ファイルが見つかりません</string>
-    <string name="error_memo_file_load_failed">ファイルの読み込みに失敗しました</string>
+    <string name="dialog_url_hint">RSSフィードのURL</string>
+    <string name="dialog_button_add">登録する</string>
+    <string name="dialog_button_cancel">キャンセル</string>
+    <string name="dialog_delete_title">サイトの登録解除</string>
+    <string name="dialog_delete_message">選択したサイトを登録解除しますか</string>
+    <string name="dialog_button_positive">はい</string>
+    
+    <string name="notification_title">新着の記事</string>
+    <string name="notification_message">%1$d件の新着リンクがあります。</string>
 
 </resources>

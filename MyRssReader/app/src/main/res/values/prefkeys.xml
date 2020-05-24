@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- Preferencesのkey -->
-    <string name="key_screen_reverse" translatable="false">screen.reverse</string>
-    <string name="key_file_name_prefix" translatable="false">file.name.prefix</string>
-    <string name="key_text_size" translatable="false">text.size</string>
-    <string name="key_text_style" translatable="false">text.style</string>
-</resources>

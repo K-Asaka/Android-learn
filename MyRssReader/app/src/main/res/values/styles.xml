@@ -9,29 +9,29 @@
     </style>
 
     <!-- テキスト表示のスタイル -->
-    <style name="Text" />
+    <style name="Text"/>
 
-    <!-- テキスト(大) -->
+    <!-- テキスト（大） -->
     <style name="Text.Large" parent="Text">
         <item name="android:textSize">@dimen/text_size_large</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/colorPrimaryText</item>
     </style>
 
-    <!-- テキスト(中) -->
+    <!-- テキスト（中） -->
     <style name="Text.Medium" parent="Text">
         <item name="android:textSize">@dimen/text_size_medium</item>
         <item name="android:textColor">@color/colorSecondaryText</item>
     </style>
 
-    <!-- テキスト(小) -->
+    <!-- テキスト（小） -->
     <style name="Text.Small" parent="Text">
         <item name="android:textSize">@dimen/text_size_small</item>
         <item name="android:textColor">@color/colorSecondaryText</item>
     </style>
 
     <!-- リストアイテム用のスタイル -->
-    <style name="List" />
+    <style name="List"/>
 
     <!-- リストアイテムのタイトルのスタイル -->
     <style name="List.Title" parent="List">
