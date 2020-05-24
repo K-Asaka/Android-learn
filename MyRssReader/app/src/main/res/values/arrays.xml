@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 選択可能なフォントサイズ -->
+    <string-array name="text_size_labels">
+        <item>@string/settings_text_size_large</item>
+        <item>@string/settings_text_size_medium</item>
+        <item>@string/settings_text_size_small</item>
+    </string-array>
+    <!-- フォントサイズの値 -->
+    <string-array name="text_size_values">
+        <item>large</item>
+        <item>medium</item>
+        <item>small</item>
+    </string-array>
+
+    <!-- 選択可能なタイプフェイス -->
+    <string-array name="text_style_labels">
+        <item>@string/settings_text_style_italic</item>
+        <item>@string/settings_text_style_bold</item>
+    </string-array>
+    <!-- タイプフェイスの値 -->
+    <string-array name="text_style_values">
+        <item>italic</item>
+        <item>bold</item>
+    </string-array>
+</resources>
