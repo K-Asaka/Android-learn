@@ -3,6 +3,8 @@ package com.example.android.sample.myrssreader;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
 import com.example.android.sample.myrssreader.data.Site;
 import com.example.android.sample.myrssreader.database.RssRepository;
@@ -12,6 +14,7 @@ import com.example.android.sample.myrssreader.parser.RSSParser;
 import java.util.List;
 
 // 条件を指定してJobInfoにまとめる
+@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class PollingJob extends JobService {
     private JobParameters params;
 
@@ -62,6 +65,7 @@ public class PollingJob extends JobService {
             return null;
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         protected void onPostExecute(Void result) {
             jobFinished(params, false);
