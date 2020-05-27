@@ -17,6 +17,7 @@
             </intent-filter>
         </activity>
         <service android:name=".PollingService" android:exported="false"/>
+        <service android:name=".PollingJob" android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>
