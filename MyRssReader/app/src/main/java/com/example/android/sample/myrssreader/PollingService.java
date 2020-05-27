@@ -36,7 +36,7 @@ public class PollingService extends IntentService {
             RSSParser parser = new RSSParser();
 
             // ダウンロードしたRSSフィードを解析する
-            if (!parser.parse(httpGet.getResponse()) {
+            if (!parser.parse(httpGet.getResponse())) {
                 continue;
             }
 
