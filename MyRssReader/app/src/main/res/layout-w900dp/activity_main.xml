@@ -7,19 +7,37 @@
     android:layout_height="match_parent"
     tools:context="com.example.android.sample.myrssreader.MainActivity">
 
-    <!-- main content -->
-    <FrameLayout
-        android:id="@+id/MasterContainer"
+    <!-- main container -->
+    <LinearLayout
+        android:id="@+id/DualPaneContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:divider="@color/colorDivider"
+        android:baselineAligned="false">
 
-        <fragment
-            android:layout_width="match_parent"
+        <!-- master content -->
+        <FrameLayout
+            android:id="@+id/MasterContainer"
+            android:layout_width="240dp"
+            android:layout_height="match_parent">
+
+            <fragment
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:name="com.example.android.sample.myrssreader.LinkListFragment"
+                tools:layout="@layout/fragment_links" />
+
+        </FrameLayout>
+
+        <!-- detail content -->
+        <FrameLayout
+            android:id="@+id/DetailContainer"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:name="com.example.android.sample.myrssreader.LinkListFragment"
-            tools:layout="@layout/fragment_links" />
+            android:layout_weight="1" />
 
-    </FrameLayout>
+    </LinearLayout>
 
     <!-- drawer menu -->
     <FrameLayout
