@@ -1,10 +1,10 @@
 package com.example.android.sample.myrssreader;
 
+import android.annotation.TargetApi;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 
 import com.example.android.sample.myrssreader.data.Site;
 import com.example.android.sample.myrssreader.database.RssRepository;
@@ -13,9 +13,12 @@ import com.example.android.sample.myrssreader.parser.RSSParser;
 
 import java.util.List;
 
-// 条件を指定してJobInfoにまとめる
-@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+/**
+ * 定期的に起動される、フィードの記事をダウンロードするJob
+ */
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class PollingJob extends JobService {
+
     private JobParameters params;
 
     @Override
@@ -31,14 +34,16 @@ public class PollingJob extends JobService {
     }
 
     private class DownloadTask extends AsyncTask<Void, Void, Void> {
+
         @Override
         protected Void doInBackground(Void... params) {
+
             List<Site> sites = RssRepository.getAllSites(PollingJob.this);
 
             int newArticles = 0;
 
             // すべての登録済みRSS配信サイトからダウンロードする
-            for (Site site : sites) {
+            for(Site site : sites) {
                 HttpGet httpGet = new HttpGet(site.getUrl());
 
                 // ダウンロードする
@@ -55,6 +60,7 @@ public class PollingJob extends JobService {
 
                 newArticles += RssRepository.insertLinks(PollingJob.this,
                         site.getId(), parser.getLinkList());
+
             }
 
             if (newArticles > 0) {
@@ -65,7 +71,6 @@ public class PollingJob extends JobService {
             return null;
         }
 
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         protected void onPostExecute(Void result) {
             jobFinished(params, false);

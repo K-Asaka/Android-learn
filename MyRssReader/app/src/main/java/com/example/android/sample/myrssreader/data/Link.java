@@ -1,18 +1,21 @@
 package com.example.android.sample.myrssreader.data;
 
+/**
+ * 記事をあらわすオブジェクト
+ */
 public class Link {
 
-    // DBの主キー
+    // データベースの主キー
     private long id;
-    // タイトル
+    // 記事タイトル
     private String title;
-    // 説明
+    // 概要
     private String description;
     // 発行日
     private long pubDate;
-    // リンク先URL
+    // 記事へのリンクURL
     private String url;
-    // このリンクを配信していたRSSフィードのURL
+    // 配信サイトのデータベースの主キー
     private long siteId;
 
     public long getId() {
@@ -62,4 +65,5 @@ public class Link {
     public void setSiteId(long siteId) {
         this.siteId = siteId;
     }
+
 }

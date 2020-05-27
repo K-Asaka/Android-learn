@@ -7,7 +7,11 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewFragment;
 
+/**
+ * 記事ページを開くFragment
+ */
 public class WebPageFragment extends WebViewFragment {
+
     // このフラグメントのインスタンスを返す
     public static WebPageFragment newInstance(String url) {
         WebPageFragment fragment = new WebPageFragment();
@@ -20,9 +24,8 @@ public class WebPageFragment extends WebViewFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        WebView webView = (WebView)super.onCreateView(inflater, container, savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        WebView webView = (WebView) super.onCreateView(inflater, container, savedInstanceState);
 
         Bundle args = getArguments();
         String url = args.getString("url");

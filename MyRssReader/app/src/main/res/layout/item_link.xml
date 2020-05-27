@@ -20,17 +20,17 @@
     <!-- description -->
     <TextView
         android:id="@+id/Description"
-        style="@style/List.Discription"
+        style="@style/List.Description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="サンプルで表示している記事の説明です。" />
+        tools:text="サンプルで表示している記事の説明です。"/>
 
     <!-- 記事発行日時 -->
     <TextView
         android:id="@+id/TimeAgo"
         style="@style/List.SubText"
         android:layout_width="wrap_content"
-        android:layout_heigth="wrap_content"
+        android:layout_height="wrap_content"
         tools:text="06/15 12:30"/>
 
 </LinearLayout>

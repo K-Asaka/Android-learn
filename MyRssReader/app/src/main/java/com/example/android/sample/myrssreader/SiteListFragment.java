@@ -1,12 +1,12 @@
 package com.example.android.sample.myrssreader;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.Loader;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,21 +14,24 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.android.sample.myrssreader.adapter.SiteAdapter;
 import com.example.android.sample.myrssreader.data.Site;
+import com.example.android.sample.myrssreader.adapter.SiteAdapter;
 import com.example.android.sample.myrssreader.loader.AddSiteLoader;
 import com.example.android.sample.myrssreader.loader.DeleteSiteLoader;
 import com.example.android.sample.myrssreader.loader.SiteListLoader;
 
 import java.util.List;
 
+/**
+ * RSS配信サイトの一覧を表示するFragment
+ */
 public class SiteListFragment extends Fragment
         implements LoaderManager.LoaderCallbacks, AdapterView.OnItemClickListener {
 
     // 各LoaderのID
     private static final int LOADER_LOAD_SITES = 1;
     private static final int LOADER_ADD_SITE = 2;
-    private static final int LOADER_DELETE_SITE = 3;
+    private static final int LOADER_DELELTE_SITE = 3;
 
     // 登録／削除フラグメントへのリクエストコード
     private static final int REQUEST_ADD_SITE = 1;
@@ -45,15 +48,15 @@ public class SiteListFragment extends Fragment
 
     private SiteAdapter mAdapter;
 
-    // アクティビティがインターフェースを実装しているかチェックする
+    // Activityがインターフェースを実装しているかチェックする
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
         if (!(context instanceof SiteListFragmentListener)) {
-            // アクティビティがSiteListFragmentListenerを実装していない場合
+            // ActivityがFeedsFragmentListenerを実装していない場合
             throw new RuntimeException(context.getClass().getSimpleName()
-                    + " does not implements SiteListFragmentListener");
+                    + " does not implement SiteListFragmentListener");
         }
     }
 
@@ -69,12 +72,13 @@ public class SiteListFragment extends Fragment
     public void onDestroyView() {
         super.onDestroyView();
 
-        // Loaderを破棄
+        // Loaderを廃棄
         getLoaderManager().destroyLoader(LOADER_LOAD_SITES);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         // Viewを生成する
         View v = inflater.inflate(R.layout.fragment_sites, container, false);
 
@@ -82,14 +86,15 @@ public class SiteListFragment extends Fragment
 
         ListView listView = (ListView)v.findViewById(R.id.SiteList);
 
-        // ヘッダーを生成
+        // ヘッダーを生成する
         View header = inflater.inflate(R.layout.header_add_site, null, false);
         // ヘッダーのクリックイベントを追加
         header.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // ダイアログフラグメントを生成して表示
-                AddSiteDialogFragment dialog = AddSiteDialogFragment.newInstance(
+                AddSiteDialogFragment dialog =
+                        AddSiteDialogFragment.newInstance(
                         SiteListFragment.this, REQUEST_ADD_SITE);
                 dialog.show(getFragmentManager(), TAG_DIALOG_FRAGMENT);
             }
@@ -107,22 +112,23 @@ public class SiteListFragment extends Fragment
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         // ヘッダーもpositionにカウントされるので、1減らす
-        Site site = (Site) mAdapter.getItem(position - 1);
+        Site site = mAdapter.getItem(position - 1);
 
         // 削除を確認するダイアログを表示する
         DeleteSiteDialogFragment dialog = DeleteSiteDialogFragment.newInstance(
                 SiteListFragment.this, REQUEST_DELETE_CONFIRM, site.getId());
         dialog.show(getFragmentManager(), TAG_DIALOG_FRAGMENT);
+
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         // キャンセルされた場合などは何も行わない
         if (resultCode != Activity.RESULT_OK) return;
 
         // RSS配信サイトを追加した場合
         if (requestCode == REQUEST_ADD_SITE) {
             // RSS配信サイトを追加するLoaderを呼ぶ
-
             String url = data.getStringExtra("url");
             Bundle args = new Bundle();
             args.putString("url", url);
@@ -134,23 +140,23 @@ public class SiteListFragment extends Fragment
             } else {
                 getLoaderManager().restartLoader(LOADER_ADD_SITE, args, this);
             }
+
         } else if (requestCode == REQUEST_DELETE_CONFIRM) {
             // 配信サイトを登録削除するLoaderを呼ぶ
-
             long targetFeedId = data.getLongExtra("site_id", -1L);
             Bundle args = new Bundle();
             args.putLong("targetId", targetFeedId);
 
-            Loader loader = getLoaderManager().getLoader(LOADER_DELETE_SITE);
+            Loader loader = getLoaderManager().getLoader(LOADER_DELELTE_SITE);
             if (loader == null) {
-                getLoaderManager().initLoader(LOADER_DELETE_SITE, args, this);
+                getLoaderManager().initLoader(LOADER_DELELTE_SITE, args, this);
             } else {
-                getLoaderManager().restartLoader(LOADER_DELETE_SITE, args, this);
+                getLoaderManager().restartLoader(LOADER_DELELTE_SITE, args, this);
             }
         }
+
     }
 
-    // 各Loaderの初期化
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
         if (id == LOADER_LOAD_SITES) {
@@ -166,7 +172,8 @@ public class SiteListFragment extends Fragment
             loader.forceLoad();
 
             return loader;
-        } else if (id == LOADER_DELETE_SITE) {
+
+        } else if (id == LOADER_DELELTE_SITE) {
             // 登録済みのRSS配信サイトを削除する
             long siteId = args.getLong("targetId");
 
@@ -175,17 +182,20 @@ public class SiteListFragment extends Fragment
 
             return loader;
         }
+
         return null;
     }
 
-    // Loaderの処理が終わったときに呼ばれる
+    // Loaderの処理が終わった時に呼ばれる
     @Override
     public void onLoadFinished(Loader loader, Object data) {
         int id = loader.getId();
 
-        if (id == LOADER_LOAD_SITES && data != null) {
+        if (id == LOADER_LOAD_SITES
+                && data != null) {
             // 登録済みのRSS配信サイトの一覧が得られた
-            mAdapter.addAll((List<Site>) data);
+            mAdapter.addAll((List<Site>)data);
+
         } else if (id == LOADER_ADD_SITE) {
             // RSS配信サイトを登録した場合、すぐに反映する
             if (data != null) {
@@ -196,7 +206,8 @@ public class SiteListFragment extends Fragment
             } else {
                 Toast.makeText(getActivity(), "登録できませんでした", Toast.LENGTH_SHORT).show();
             }
-        } else if (id == LOADER_DELETE_SITE) {
+
+        } else if (id == LOADER_DELELTE_SITE) {
             // RSS配信サイトを登録削除した場合、すぐに反映する
             int affected = (int)data;
             if (affected > 0) {
@@ -208,13 +219,15 @@ public class SiteListFragment extends Fragment
                 SiteListFragmentListener listener = (SiteListFragmentListener)getActivity();
                 listener.onSiteDeleted(targetId);
             } else {
-                Toast.makeText(getActivity(), "削除できませんでした", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "削除できませんでした", Toast.LENGTH_SHORT).show();;
             }
         }
+
     }
 
     @Override
     public void onLoaderReset(Loader loader) {
 
     }
+
 }

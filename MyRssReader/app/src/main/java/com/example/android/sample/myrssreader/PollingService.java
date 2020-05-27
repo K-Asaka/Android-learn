@@ -10,7 +10,11 @@ import com.example.android.sample.myrssreader.parser.RSSParser;
 
 import java.util.List;
 
+/**
+ * 定期的に起動される、フィードの記事をダウンロードするService
+ */
 public class PollingService extends IntentService {
+
     private static final String TAG = "PollingService";
 
     public PollingService() {
@@ -24,7 +28,8 @@ public class PollingService extends IntentService {
         int newArticles = 0;
 
         // 登録済みの全サイトからダウンロードする
-        for (Site site : sites) {
+        for(Site site : sites) {
+
             // RSSフィードをダウンロード
             HttpGet httpGet = new HttpGet(site.getUrl());
 
@@ -40,8 +45,7 @@ public class PollingService extends IntentService {
                 continue;
             }
 
-            newArticles += RssRepository.insertLinks(this, site.getId(),
-                    parser.getLinkList());
+            newArticles += RssRepository.insertLinks(this, site.getId(), parser.getLinkList());
         }
 
         if (newArticles > 0) {

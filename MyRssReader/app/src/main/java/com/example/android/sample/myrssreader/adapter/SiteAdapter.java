@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * サイトリスト用のAdapter
+ */
 public class SiteAdapter extends BaseAdapter {
 
     private Context mContext;
@@ -39,14 +42,16 @@ public class SiteAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+
     // サイトリストからアイテムを取り除く
-    public void removeItem(long siteId){
+    public void removeItem(long siteId) {
         Iterator<Site> iterator = mSites.iterator();
-        while (iterator.hasNext()) {
+        while(iterator.hasNext()) {
             Site site = iterator.next();
             if (siteId == site.getId()) {
                 iterator.remove();
                 notifyDataSetChanged();
+                return;
             }
         }
     }
@@ -59,7 +64,7 @@ public class SiteAdapter extends BaseAdapter {
 
     // positionに対応するサイト情報を返す
     @Override
-    public Object getItem(int position) {
+    public Site getItem(int position) {
         return mSites.get(position);
     }
 
@@ -77,15 +82,17 @@ public class SiteAdapter extends BaseAdapter {
             itemView = mInflater.inflate(R.layout.item_site, parent, false);
             holder = new SiteViewHolder(itemView);
             itemView.setTag(holder);
+
         } else {
             itemView = convertView;
             holder = (SiteViewHolder)convertView.getTag();
         }
 
-        Site site = (Site) getItem(position);
+        Site site = getItem(position);
 
         holder.title.setText(site.getTitle());
-        holder.linksCount.setText(mContext.getString(R.string.site_link_count, site.getLinkCount()));
+        holder.linksCount.setText(
+                mContext.getString(R.string.site_link_count, site.getLinkCount()));
 
         return itemView;
     }
@@ -94,11 +101,12 @@ public class SiteAdapter extends BaseAdapter {
      * 記事一覧のアイテム用ViewHolder
      */
     private static class SiteViewHolder {
+
         private TextView title;
         private TextView linksCount;
 
         public SiteViewHolder(View itemView) {
-            title = (TextView)itemView.findViewById(R.id.Title);
+            title = (TextView) itemView.findViewById(R.id.Title);
             linksCount = (TextView)itemView.findViewById(R.id.ArticlesCount);
         }
     }

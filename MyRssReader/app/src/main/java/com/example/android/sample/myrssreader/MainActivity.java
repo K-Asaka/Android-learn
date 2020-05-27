@@ -1,5 +1,6 @@
 package com.example.android.sample.myrssreader;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.job.JobInfo;
@@ -10,16 +11,17 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
-import android.os.SystemClock;
-import android.support.annotation.NonNull;
-import android.support.customtabs.CustomTabsIntent;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.MenuItem;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.core.content.ContextCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.android.sample.myrssreader.data.Link;
 
@@ -44,8 +46,9 @@ public class MainActivity extends AppCompatActivity
         mIsDualPane = findViewById(R.id.DualPaneContainer) != null;
 
         // NavigationDrawerの設定を行う
-        DrawerLayout drawerLayout = (DrawerLayout)findViewById(R.id.DrawerLayout);
-        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.app_name, R.string.app_name);
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.DrawerLayout);
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
+                R.string.app_name, R.string.app_name);
         // ドロワーのトグルを有効にする
         mDrawerToggle.setDrawerIndicatorEnabled(true);
         drawerLayout.addDrawerListener(mDrawerToggle);
@@ -61,7 +64,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setRepeatingTask() {
-        // 定期的に新しい記事がないかをチェックする
+        // 定期的に新しい記事が無いかをチェックする
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // API Levelが21以上の場合には、JobSchedulerを使用する
             ComponentName jobService = new ComponentName(this, PollingJob.class);
@@ -72,7 +75,7 @@ public class MainActivity extends AppCompatActivity
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                     .build();
 
-            // JoinSchedulerを獲得する
+            // JobSchedulerを取得する
             JobScheduler scheduler = (JobScheduler)getSystemService(
                     Context.JOB_SCHEDULER_SERVICE);
 
@@ -81,17 +84,17 @@ public class MainActivity extends AppCompatActivity
         } else {
             // API Level 21未満の場合には、AlarmManagerを使用する
             Intent serviceIntent = new Intent(this, PollingService.class);
-            // すでに登録されているかをチェックする
+            // 既に登録されているかをチェックする
             boolean isExist = (PendingIntent.getService(this, JOB_FETCH_FEED,
                     serviceIntent, PendingIntent.FLAG_NO_CREATE) != null);
 
             if (!isExist) {
                 PendingIntent operation = PendingIntent.getService(
-                        this, JOB_FETCH_FEED, serviceIntent,
-                        PendingIntent.FLAG_NO_CREATE);
+                        this, JOB_FETCH_FEED, serviceIntent, PendingIntent.FLAG_NO_CREATE);
 
                 // AlarmManagerを使用する
-                AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+                AlarmManager alarmManager = (AlarmManager)getSystemService(
+                        Context.ALARM_SERVICE);
 
                 long trigger = SystemClock.elapsedRealtime() + INTERVAL;
 
@@ -132,45 +135,48 @@ public class MainActivity extends AppCompatActivity
         // リンクがタップされたら、リンク先のWebページを開く
 
         if (mIsDualPane) {
-            // 横幅が広い場合には、WebViewFragmentをDetailに入れる
+            // 横幅が広い場合には、WebViewFragmentをDetailにいれる
             WebPageFragment fragment = WebPageFragment.newInstance(link.getUrl());
-            getFragmentManager().beginTransaction()
+            getFragmentManager()
+                    .beginTransaction()
                     .replace(R.id.DetailContainer, fragment)
                     .commit();
+
         } else {
             // 横幅が狭い場合には、Chrome Custom Tabsを使用する
 
             // ツールバーの色
             int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
 
-            // CustomTabsIntentを作成するためのビルダークラス
+            // CustomTabsIntentを作成するためのビルダークラス 
             CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
 
             // Custom Tabsの設定を行い、CustomTabsIntentを作成する
-            // Webサイトのタイトルを表示する
-            CustomTabsIntent intent = builder.setShowTitle(true)
-                    .setToolbarColor(colorPrimary)      // ツールバーの色を指定する
+            CustomTabsIntent intent = builder.setShowTitle(true) // Webサイトのタイトルを表示する
+                    .setToolbarColor(colorPrimary) // ツールバーの色を指定する
                     .build();
 
-            // Chrome Custom TabsでWebページを開く
+            // Chrome Custom TabsでWebページを開く 
             intent.launchUrl(this, Uri.parse(link.getUrl()));
         }
+
     }
 
     @Override
     public void onSiteDeleted(long id) {
-        LinkListFragment fragment = (LinkListFragment)getSupportFragmentManager()
-                .findFragmentById(R.id.MasterContainer);
+        LinkListFragment fragment = (LinkListFragment)getFragmentManager()
+                .findFragmentById(R.id.MasterContaienr);
 
         if (fragment != null) {
             fragment.removeLinks(id);
         }
+
     }
 
     @Override
     public void onSiteAdded() {
-        LinkListFragment fragment = (LinkListFragment)getSupportFragmentManager()
-                .findFragmentById(R.id.MasterContainer);
+        LinkListFragment fragment = (LinkListFragment)getFragmentManager()
+                .findFragmentById(R.id.MasterContaienr);
 
         if (fragment != null) {
             fragment.reload();

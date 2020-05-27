@@ -5,10 +5,16 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.NotificationCompat;
 
+import androidx.core.app.NotificationCompat;
+
+/**
+ * 定型の通知を送る
+ */
 public class NotificationUtil {
+
     private static final int REQUEST_MAIN_ACTIVITY = 1;
+
     private NotificationUtil() {}
 
     public static void notifyUpdate(Context context, int newLinks) {
@@ -16,9 +22,8 @@ public class NotificationUtil {
         Intent intent = new Intent(context, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        PendingIntent viewIntent =
-                PendingIntent.getActivity(context, REQUEST_MAIN_ACTIVITY,
-                        intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent viewIntent = PendingIntent.getActivity(context, REQUEST_MAIN_ACTIVITY,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // 通知オブジェクトを作る
         Notification notification = new NotificationCompat.Builder(context)
@@ -26,11 +31,11 @@ public class NotificationUtil {
                 .setContentTitle(context.getString(R.string.notification_title))
                 .setContentText(context.getString(R.string.notification_message, newLinks))
                 .setContentIntent(viewIntent)
-                .setAutoCancel(true)    // タップすると、通知が消える
+                .setAutoCancel(true) // タップすると、通知が消える
                 .build();
 
-        NotificationManager notificationManager = (NotificationManager)context.getSystemService(
-                Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager
+                = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         // 通知する
         notificationManager.notify(REQUEST_MAIN_ACTIVITY, notification);

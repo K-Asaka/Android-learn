@@ -1,8 +1,9 @@
 package com.example.android.sample.myrssreader.loader;
 
+import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.support.v4.content.AsyncTaskLoader;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.example.android.sample.myrssreader.data.Link;
 import com.example.android.sample.myrssreader.data.Site;
@@ -13,7 +14,10 @@ import com.example.android.sample.myrssreader.parser.RSSParser;
 import java.io.InputStream;
 import java.util.List;
 
-public class AddSiteLoader extends AsyncTaskLoader<Site> {
+/**
+ * 記事の一覧を取得するためのLoader
+ */
+public class AddSiteLoader extends AsyncTaskLoader<Site>{
     private String url;
 
     public AddSiteLoader(Context context, String url) {
@@ -23,13 +27,16 @@ public class AddSiteLoader extends AsyncTaskLoader<Site> {
 
     @Override
     public Site loadInBackground() {
+
         if (!TextUtils.isEmpty(this.url)) {
+
             // RSSフィードをダウンロード
             HttpGet httpGet = new HttpGet(this.url);
             if (!httpGet.get()) {
                 // 通信に失敗
                 return null;
             }
+
             // ダウンロードしたレスポンスの解析
             InputStream in = httpGet.getResponse();
             RSSParser parser = new RSSParser();
@@ -58,6 +65,7 @@ public class AddSiteLoader extends AsyncTaskLoader<Site> {
                 return site;
             }
         }
+
         return null;
     }
 }

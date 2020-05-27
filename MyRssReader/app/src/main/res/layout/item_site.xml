@@ -10,13 +10,13 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical">
 
-    <!-- Siteスタイル -->
+    <!-- Siteタイトル -->
     <TextView
         android:id="@+id/Title"
         style="@style/List.Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="ビジネス+IT最新ニュース" />
+        tools:text="ビジネス+IT最新ニュース"/>
 
     <!-- リンク数 -->
     <TextView
@@ -24,6 +24,6 @@
         style="@style/List.SubText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="15 記事" />
+        tools:text="15 記事"/>
 
 </LinearLayout>

@@ -1,11 +1,12 @@
 package com.example.android.sample.myrssreader.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.android.sample.myrssreader.R;
 import com.example.android.sample.myrssreader.data.Link;
@@ -14,6 +15,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * 記事一覧用のAdapter
+ */
 public class LinkAdapter extends RecyclerView.Adapter {
     // ViewType
     private static final int VIEW_TYPE_LINK = 0;
@@ -22,11 +26,11 @@ public class LinkAdapter extends RecyclerView.Adapter {
     private LayoutInflater mInflater;
     private List<Link> mLinks;
 
-    // リストアイテムがタップされたときのリスナー
+    // リストアイテムがクリックされた時のリスナー
     private OnItemClickListener mListener;
 
     public interface OnItemClickListener {
-        // リストアイテムがタップされた
+        // リストアイテムがクリックされた
         void onItemClick(Link link);
     }
 
@@ -38,17 +42,6 @@ public class LinkAdapter extends RecyclerView.Adapter {
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         mListener = listener;
-    }
-
-    // データ件数を返す
-    @Override
-    public int getItemCount() {
-        return mLinks.size();
-    }
-
-    // positionに対応するViewTypeを返す
-    public int getItemViewType(int position) {
-        return VIEW_TYPE_LINK;
     }
 
     @Override
@@ -72,8 +65,16 @@ public class LinkAdapter extends RecyclerView.Adapter {
             // 説明
             articleHolder.description.setText(link.getDescription());
             // 発行日
-            articleHolder.timeAgo.setText(mContext.getString(R.string.link_publish_date, link.getPubDate()));
+            articleHolder.timeAgo.setText(
+                    mContext.getString(R.string.link_publish_date,
+                            link.getPubDate()));
         }
+    }
+
+    // データ件数を返す
+    @Override
+    public int getItemCount() {
+        return mLinks.size();
     }
 
     public void addItems(List<Link> links) {
@@ -83,12 +84,13 @@ public class LinkAdapter extends RecyclerView.Adapter {
 
     public void removeItem(long feedId) {
         Iterator<Link> iterator = mLinks.iterator();
-        while (iterator.hasNext()) {
+        while(iterator.hasNext()) {
             Link link = iterator.next();
             if (link.getSiteId() == feedId) {
                 iterator.remove();
             }
         }
+
         notifyDataSetChanged();
     }
 
@@ -97,11 +99,17 @@ public class LinkAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
+    // positionに対応するViewTypeを返す
+    public int getItemViewType(int position) {
+        return VIEW_TYPE_LINK;
+    }
+
     /**
      * 記事一覧のアイテム用ViewHolder
      */
     private static class LinkViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener {
+            implements View.OnClickListener{
+
         private LinkAdapter adapter;
         private TextView title;
         private TextView description;
@@ -111,7 +119,7 @@ public class LinkAdapter extends RecyclerView.Adapter {
             super(itemView);
 
             this.adapter = adapter;
-            title = (TextView)itemView.findViewById(R.id.Title);
+            title = (TextView) itemView.findViewById(R.id.Title);
             description = (TextView)itemView.findViewById(R.id.Description);
             timeAgo = (TextView)itemView.findViewById(R.id.TimeAgo);
             itemView.setOnClickListener(this);

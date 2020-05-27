@@ -1,5 +1,8 @@
 package com.example.android.sample.myrssreader.data;
 
+/**
+ * RSSフィードの配信サイトを表すオブジェクト
+ */
 public class Site {
 
     // DBの主キー
