@@ -11,6 +11,7 @@ import android.app.Fragment;
 import android.support.v13.app.FragmentCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
+import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,6 +97,8 @@ public class CameraLegacyFragment extends Fragment implements View.OnClickListen
         mCamera = Camera.open();
 
         try {
+            // カメラプレビューの角度を調整する
+            setDisplayOrientation();
             // カメラのプレビュー表示用のTextureを設定する
             mCamera.setPreviewTexture(surface);
             // プレビューの表示を開始する
@@ -103,6 +106,36 @@ public class CameraLegacyFragment extends Fragment implements View.OnClickListen
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // 端末の向きに合わせてカメラの角度を調整する
+    public void setDisplayOrientation() {
+        // カメラ情報は、値を格納するためのオブジェクトを先に作成し
+        // Camera#getCameraInfo()でオブジェクトに値を設定してもらう
+        Camera.CameraInfo info = new Camera.CameraInfo();
+        Camera.getCameraInfo(0, info);
+        // 端末の方向を取得する
+        int rotation = getActivity().getWindowManager().getDefaultDisplay().getRotation();
+        // 端末の方向に合わせて、調整する値を決定する
+        int degrees = 0;
+        switch (rotation) {
+            case Surface.ROTATION_0:
+                degrees = 0;
+                break;
+            case Surface.ROTATION_90:
+                degrees = 90;
+                break;
+            case Surface.ROTATION_180:
+                degrees = 180;
+                break;
+            case Surface.ROTATION_270:
+                degrees = 270;
+                break;
+        }
+        // 最終的なカメラの角度を計算する
+        // 0～360度に収まるように、360を足したうえで、360で割った余りを計算する
+        int result = (info.orientation - degrees + 360) % 360;
+        mCamera.setDisplayOrientation(result);
     }
 
     @Override
