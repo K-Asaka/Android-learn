@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "29.0.3"
+    buildToolsVersion '29.0.3'
 
     defaultConfig {
         applicationId "jp.ac.chibafjb.asaka.myplaceapp"
@@ -25,6 +25,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.google.android.gms:play-services-location:10.0.0'
+    implementation 'com.google.android.gms:play-services-maps:10.0.0'
 
     implementation 'com.android.support:appcompat-v7:25.0.1'
     implementation 'com.android.support:support-v13:25.0.1'
