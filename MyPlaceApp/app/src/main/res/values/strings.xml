@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MyPlaceApp</string>
+    <string name="switch_logging">位置情報の記録</string>
 </resources>
