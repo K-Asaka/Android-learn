@@ -19,6 +19,11 @@
             </intent-filter>
 
         </activity>
+        <!-- Google Maps Android API用 -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="API KEY"/>
+
         <service android:name=".PlaceStoreService" android:exported="false" />
     </application>
 
