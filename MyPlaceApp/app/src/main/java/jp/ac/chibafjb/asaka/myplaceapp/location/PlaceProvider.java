@@ -17,7 +17,7 @@ import android.support.annotation.NonNull;
 public class PlaceProvider extends ContentProvider {
 
     // <authority>
-    private static final String AUTHORITY    = "com.example.android.sample.myplaceapp.place";
+    private static final String AUTHORITY    = "jp.ac.chibafjb.asaka.myplaceapp.place";
     // <path>
     private static final String CONTENT_PATH = "places";
 

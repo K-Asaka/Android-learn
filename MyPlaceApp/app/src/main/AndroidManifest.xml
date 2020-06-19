@@ -19,12 +19,21 @@
             </intent-filter>
 
         </activity>
+
+        <service android:name=".location.PlaceStoreService" android:exported="false" />
+
+        <!-- 位置情報のContentProvider -->
+        <provider
+            android:authorities="jp.ac.chibafjb.asaka.myplaceapp.place"
+            android:name=".location.PlaceProvider"
+            android:readPermission="jp.ac.chibafjb.asaka.myplaceapp.place.read"
+            android:writePermission="jp.ac.chibafjb.asaka.myplaceapp.place.write"
+            android:exported="false" />
+
         <!-- Google Maps Android API用 -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="API KEY"/>
-
-        <service android:name=".PlaceStoreService" android:exported="false" />
+            android:value="YOUR API KEY"/>
     </application>
 
 </manifest>
