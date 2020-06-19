@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -21,21 +20,18 @@ import jp.ac.chibafjb.asaka.myplaceapp.location.LoggedMapFragment;
 import jp.ac.chibafjb.asaka.myplaceapp.location.Place;
 
 public class MainActivity extends AppCompatActivity
-        implements LoggedDateFragment.LoggedDateFragmentListener,
-        View.OnClickListener {
+        implements LoggedDateFragment.LoggedDateFragmentListener, View.OnClickListener {
 
     // ナビゲーションドロワーのトグル
     private ActionBarDrawerToggle mDrawerToggle;
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         // 本日の日付文字列
-        String date = String.format(Place.DATE_STR_FORMAT,
-                System.currentTimeMillis());
+        String date = String.format(Place.DATE_STR_FORMAT, System.currentTimeMillis());
 
         // 地図フラグメントを生成する
         LoggedMapFragment mapFragment = LoggedMapFragment.newInstance(date);
@@ -49,8 +45,7 @@ public class MainActivity extends AppCompatActivity
                 .commit();
 
         // NavigationDrawerの設定を行う
-        DrawerLayout drawerLayout =
-                (DrawerLayout)findViewById(R.id.DrawerLayout);
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.DrawerLayout);
         mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
                 R.string.app_name, R.string.app_name);
         // ドロワーのトグルを有効にする
@@ -114,8 +109,9 @@ public class MainActivity extends AppCompatActivity
         // 「撮影する」ボタンが押された
         if (v.getId() == R.id.CameraButton) {
             Fragment cameraFragment;
+
             // カメラフラグメントを表示する
-            if (Build.VERSION.SDK_INT >= 21) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
                 cameraFragment = new CameraFragment();
             } else {
                 cameraFragment = new CameraLegacyFragment();
@@ -123,8 +119,9 @@ public class MainActivity extends AppCompatActivity
 
             getFragmentManager().beginTransaction()
                     .replace(R.id.CameraContainer, cameraFragment)
-                    .addToBackStack(null)   // バックスタックに入れる
+                    .addToBackStack(null) // バックスタックに入れることで、戻るキーで戻れる
                     .commit();
+
         }
     }
 }

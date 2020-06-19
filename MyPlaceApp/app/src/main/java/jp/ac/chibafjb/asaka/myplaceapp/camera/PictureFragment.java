@@ -18,16 +18,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import jp.ac.chibafjb.asaka.myplaceapp.R;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.ac.chibafjb.asaka.myplaceapp.R;
-
+/**
+ * 画像をグリッド表示するフラグメント
+ */
 public class PictureFragment extends Fragment {
     // データベースから検索するLoader用のID
     private static final int DB_LOADER = 1;
-    // 日付を指定するためのBundleのキー
+    // 日付を指定するためのバンドルのキー
     private static final String ARGS_DATE = "date";
     // グリッド表示するアダプター
     private GalleryAdapter mAdapter;
@@ -41,7 +44,7 @@ public class PictureFragment extends Fragment {
     public static PictureFragment newInstance(String dateStr) {
         PictureFragment fragment = new PictureFragment();
 
-        // 日付の指定をBundleに詰める
+        // 日付の指定をバンドルに詰める
         Bundle args = new Bundle();
         args.putString(ARGS_DATE, dateStr);
 
@@ -50,14 +53,16 @@ public class PictureFragment extends Fragment {
         return fragment;
     }
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
         return inflater.inflate(R.layout.fragment_gallery, container, false);
     }
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
+
         mRecyclerView = (RecyclerView)view.findViewById(R.id.Gallery);
-        mRecyclerView.setLayoutManager(
-                new GridLayoutManager(view.getContext(), 2));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 2));
     }
 
     public void setDate(String dateStr) {
@@ -71,7 +76,7 @@ public class PictureFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         // Loaderを初期化する
-        getLoaderManager().restartLoader(DB_LOADER, getArguments(),mDBLoaderCallback);
+        getLoaderManager().restartLoader(DB_LOADER, getArguments(), mDBLoaderCallback);
     }
 
     @Override
@@ -81,7 +86,7 @@ public class PictureFragment extends Fragment {
         // キャッシュをクリア
         mCache.clear();
 
-        // Loaderを破棄
+        // Loaderを廃棄
         getLoaderManager().destroyLoader(DB_LOADER);
     }
 
@@ -90,7 +95,7 @@ public class PictureFragment extends Fragment {
             = new LoaderManager.LoaderCallbacks<List<String>>() {
         @Override
         public Loader<List<String>> onCreateLoader(int id, Bundle args) {
-            // Loaderの作成
+            // Loaderの生成
             DatabaseLoader loader = new DatabaseLoader(getActivity(),
                     args.getString(ARGS_DATE));
             loader.forceLoad();
@@ -98,8 +103,8 @@ public class PictureFragment extends Fragment {
         }
 
         @Override
-        public void onLoadFinished(Loader<List<String>> loader,List<String> data) {
-            // アダプターをセットする
+        public void onLoadFinished(Loader<List<String>> loader, List<String> data) {
+            // Adapterをセットする
             mAdapter = new GalleryAdapter(getActivity(), data);
             mRecyclerView.setAdapter(mAdapter);
         }
@@ -111,6 +116,7 @@ public class PictureFragment extends Fragment {
     };
 
     private static class DatabaseLoader extends AsyncTaskLoader<List<String>> {
+
         String dateStr;
 
         public DatabaseLoader(Context context, String dateStr) {
@@ -128,8 +134,8 @@ public class PictureFragment extends Fragment {
 
             // 指定した日付の画像を検索する
             Cursor cursor = database.query(PictureDBHelper.TABLE_NAME, null,
-                    PictureDBHelper.COLUMN_DATE_STR + " like ?",
-                    new String[]{ dateStr },
+                    PictureDBHelper.COLUMN_DATE_STR+ " like ?",
+                    new String[]{dateStr},
                     null, null,
                     PictureDBHelper.COLUMN_REGISTER_TIME + " DESC");
 
@@ -138,12 +144,12 @@ public class PictureFragment extends Fragment {
             // Cursorからファイルパスをリストに詰める
             while (cursor.moveToNext()) {
                 String path = cursor.getString(
-                        cursor.getColumnIndex(
-                                PictureDBHelper.COLUMN_FILE_PATH));
+                        cursor.getColumnIndex(PictureDBHelper.COLUMN_FILE_PATH));
                 filePaths.add(path);
             }
 
             cursor.close();
+
             database.close();
 
             return filePaths;
@@ -158,13 +164,7 @@ public class PictureFragment extends Fragment {
         public GalleryAdapter(Context context, List<String> files) {
             inflater = LayoutInflater.from(context);
             this.files = files;
-            viewHeight = (int)context.getResources().getDimension(
-                    R.dimen.grid_item_height);
-        }
-
-        @Override
-        public int getItemCount() {
-            return files.size();
+            viewHeight = (int)context.getResources().getDimension(R.dimen.grid_item_height);
         }
 
         public void clear() {
@@ -195,9 +195,15 @@ public class PictureFragment extends Fragment {
                 holder.imageView.setImageBitmap(bitmap);
             }
         }
+
+        @Override
+        public int getItemCount() {
+            return files.size();
+        }
     }
 
     private class ImageLoadTask extends AsyncTask<Void, Void, Boolean> {
+
         private int position;
         private int viewHeight;
         private String filePath;
@@ -210,6 +216,7 @@ public class PictureFragment extends Fragment {
 
         @Override
         protected Boolean doInBackground(Void... params) {
+
             File file = new File(filePath);
 
             if (!file.exists()) return false;

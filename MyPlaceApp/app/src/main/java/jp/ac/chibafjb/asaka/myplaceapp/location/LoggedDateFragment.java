@@ -13,30 +13,34 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import jp.ac.chibafjb.asaka.myplaceapp.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.ac.chibafjb.asaka.myplaceapp.R;
-
+/**
+ * 記録した日付の一覧を表示するフラグメント
+ */
 public class LoggedDateFragment extends ListFragment {
-    // フラグメントとアクティビティ間はインターフェースを通してアクセスすることで
-    // フラグメントがアクティビティの実装に依存することを防ぐ
+
+    // FragmentとActivity間はインターフェースを通してアクセスすることで、
+    // FragmentがActivityの実装に依存することを防ぐ
     public interface LoggedDateFragmentListener {
         void onDateSelected(String date);
     }
 
-    // 日付を読み込むLoader
+    // 日付を読み込むローダー
     private static final int DATE_LOADER = 1;
     // リストのアダプター
     private DateAdapter mAdapter;
 
-    // アクティビティがインターフェースを実装しているかチェックする
+    // Activityがインターフェースを実装しているかチェックする
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
         if (!(context instanceof LoggedDateFragmentListener)) {
-            // アクティビティがLoggedDateFragmentListenerを実装していない場合
+            // ActivityがLoggedDateFragmentListenerを実装していない場合
             throw new RuntimeException(context.getClass().getSimpleName()
                     + " does not implement LoggedDateFragmentListener");
         }
@@ -46,25 +50,24 @@ public class LoggedDateFragment extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        // 空のアダプターをセットする
+        // 空のAdapterをセットする
         mAdapter = new DateAdapter(getActivity());
         setListAdapter(mAdapter);
 
         // Loaderを初期化する
-        getLoaderManager().restartLoader(DATE_LOADER, getArguments(),
-                mLoaderCallback);
+        getLoaderManager().restartLoader(DATE_LOADER, getArguments(), mLoaderCallback);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
 
-        // Loaderを破棄
+        // Loaderを廃棄
         getLoaderManager().destroyLoader(DATE_LOADER);
     }
 
     private LoaderManager.LoaderCallbacks<List<String>>
-        mLoaderCallback = new LoaderManager.LoaderCallbacks<List<String>>() {
+            mLoaderCallback = new LoaderManager.LoaderCallbacks<List<String>>() {
 
         @Override
         public LoggedDateLoader onCreateLoader(int id, Bundle args) {
@@ -92,12 +95,6 @@ public class LoggedDateFragment extends ListFragment {
         }
     };
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        String dateString = mAdapter.getItem(position);
-        ((LoggedDateFragmentListener)getActivity()).onDateSelected(dateString);
-    }
-
     private static class LoggedDateLoader extends AsyncTaskLoader<List<String>> {
 
         public LoggedDateLoader(Context context) {
@@ -108,6 +105,12 @@ public class LoggedDateFragment extends ListFragment {
         public List<String> loadInBackground() {
             return PlaceRepository.getAllDateString(getContext());
         }
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        String dateString = mAdapter.getItem(position);
+        ((LoggedDateFragmentListener)getActivity()).onDateSelected(dateString);
     }
 
     private static class DateAdapter extends BaseAdapter {
@@ -156,7 +159,7 @@ public class LoggedDateFragment extends ListFragment {
                 view = convertView;
             }
 
-            ViewHolder holder = (ViewHolder) view.getTag();
+            ViewHolder holder = (ViewHolder)view.getTag();
 
             String dateString = mLoggedDates.get(position);
 
@@ -171,6 +174,7 @@ public class LoggedDateFragment extends ListFragment {
             ViewHolder(View view) {
                 loggedDate = (TextView)view.findViewById(R.id.LoggedDate);
             }
+
         }
     }
 }

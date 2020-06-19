@@ -5,14 +5,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
- * 日付情報を保存するデータベース
+ * 位置情報を保存するデータベース
  */
-class PictureDBHelper extends SQLiteOpenHelper {
+public class PictureDBHelper extends SQLiteOpenHelper {
     // データベース名
     private static final String DB_NAME = "Picture.db";
     // データベースのバージョン
     private static final int DB_VERSION = 1;
-    // テーブル名
+    // テーブルメイ
     public static final String TABLE_NAME = "PICTURE";
     // IDカラム
     public static final String COLUMN_ID = "_id";
@@ -35,6 +35,7 @@ class PictureDBHelper extends SQLiteOpenHelper {
                 + COLUMN_DATE_STR + " TEXT NOT NULL, "
                 + COLUMN_REGISTER_TIME + " TIMESTAMP DEFAULT (DATETIME('now', 'localtime'))"
                 + ")";
+
         db.execSQL(createTable);
     }
 

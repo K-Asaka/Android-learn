@@ -2,8 +2,7 @@ package jp.ac.chibafjb.asaka.myplaceapp.camera;
 
 import android.util.Size;
 
-
-class CameraInfo {
+public class CameraInfo {
     private String cameraId;
     private Size previewSize;
     private Size pictureSize;

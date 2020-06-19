@@ -1,5 +1,17 @@
 <resources>
     <string name="app_name">MyPlaceApp</string>
+
+    <string name="list_time_from">%1$tH:%1$tM</string>
+    <string name="list_time_from_to">%1$tH:%1$tM\n\n%2$tH:%2$tM</string>
+    <string name="list_pictures">写真%1$d枚</string>
+    <string name="list_date">%1$tF</string>
+
     <string name="switch_logging">位置情報の記録</string>
+
+    <string name="permission_place_read_label">位置情報の読み取り</string>
+    <string name="permission_place_read_description">記録した位置を読み取ります</string>
+    <string name="permission_place_write_label">位置情報の編集</string>
+    <string name="permission_place_write_description">位置情報の記録を編集します</string>
     <string name="button_capture">撮影する</string>
+
 </resources>

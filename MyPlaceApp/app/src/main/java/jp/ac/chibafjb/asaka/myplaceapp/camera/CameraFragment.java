@@ -1,7 +1,6 @@
 package jp.ac.chibafjb.asaka.myplaceapp.camera;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -35,16 +34,23 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import jp.ac.chibafjb.asaka.myplaceapp.R;
+
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-import jp.ac.chibafjb.asaka.myplaceapp.R;
+/**
+ * カメラ撮影用フラグメント
+ */
+@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+public class CameraFragment extends Fragment implements View.OnClickListener{
 
-public class CameraFragment extends Fragment implements View.OnClickListener {
     // パーミッションのリクエストコード
     private static final int REQUEST_CAMERA_PERMISSION = 1;
+
     // テクスチャビュー
     private TextureView mTextureView;
+
     // 写真撮影後、ファイルに保存したり、DBに保存するためのスレッド
     private HandlerThread mBackgroundThread;
     private Handler mBackgroundHandler;
@@ -65,14 +71,15 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
     private MediaActionSound mSound;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_camera, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         view.findViewById(R.id.ShutterButton).setOnClickListener(this);
-        mTextureView = (TextureView) view.findViewById(R.id.PreviewTexture);
+        mTextureView = (TextureView)view.findViewById(R.id.PreviewTexture);
     }
 
     @Override
@@ -85,8 +92,15 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
+    public void onPause() {
+        stopCamera();
+        super.onPause();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
+
         // MediaActionSoundを解放する
         mSound.release();
     }
@@ -104,6 +118,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
         mBackgroundThread.start();
         mBackgroundHandler = new Handler(mBackgroundThread.getLooper());
 
+
         if (mTextureView.isAvailable()) {
             // TextureViewの準備ができているなら、カメラを開く
             openCamera(mTextureView.getWidth(), mTextureView.getHeight());
@@ -113,41 +128,43 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private final TextureView.SurfaceTextureListener mTextureListener =
-            new TextureView.SurfaceTextureListener() {
-                @Override
-                public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture,
-                                                      int width, int height) {
-                    // カメラデバイスへの接続を開始する
-                    openCamera(width, height);
-                }
+    private final TextureView.SurfaceTextureListener mTextureListener
+            = new TextureView.SurfaceTextureListener() {
+        @Override
+        public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+            // カメラデバイスへの接続を開始する
+            openCamera(width, height);
+        }
 
-                @Override
-                public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture,
-                                                        int width, int height) {
-                    // プレビューを、新しいサイズに合わせて変形する
-                    transformTexture(width, height);
-                }
+        @Override
+        public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+            // プレビューを、新しいサイズに合わせて変形する
+            transformTexture(width, height);
+        }
 
-                @Override
-                public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-                    return true;
-                }
+        @Override
+        public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+            return true;
+        }
 
-                @Override
-                public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-                }
-            };
+        @Override
+        public void onSurfaceTextureUpdated(SurfaceTexture surface) {
 
-    
+        }
+    };
+
     private void openCamera(int width, int height) {
-        if (ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            FragmentCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA},
+        // パーミッションチェック
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // パーミッションを求めるダイアログを表示する
+            FragmentCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
                     REQUEST_CAMERA_PERMISSION);
+
             return;
         }
+
         // 望ましいカメラデバイスを選択する
         mCameraInfo = new CameraChooser(getActivity(), width, height).chooseCamera();
 
@@ -157,29 +174,26 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
         }
 
         // 画像処理を行うImageReaderを生成する
-        mImageReader = ImageReader.newInstance(
-                mCameraInfo.getPictureSize().getWidth(),
+        mImageReader = ImageReader.newInstance(mCameraInfo.getPictureSize().getWidth(),
                 mCameraInfo.getPictureSize().getHeight(), ImageFormat.JPEG, 2);
-        // 画像が得られるたびに呼ばれるリスナーと、そのリスナーが動作するスレッドを設定する
+        // 画像が得られるたびに呼ばれるリスナと、そのリスナが動作するスレッドを設定する
         mImageReader.setOnImageAvailableListener(mOnImageAvailableListener, mBackgroundHandler);
 
-        // TextureViewのサイズと端末の向きに合わせて、プレビューを変形させる
+        // TextureViewのサイズに合わせて、プレビューを変形させる
         transformTexture(width, height);
 
         // カメラを開く
-        CameraManager manager = (CameraManager) getActivity().getSystemService(
-                Context.CAMERA_SERVICE);
-
+        CameraManager manager = (CameraManager)getActivity().getSystemService(Context.CAMERA_SERVICE);
         try {
-            manager.openCamera(mCameraInfo.getCameraId(), mStateCallback,
-                    mBackgroundHandler);
+            manager.openCamera(mCameraInfo.getCameraId(), mStateCallback, mBackgroundHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
+
     }
 
-    private final CameraDevice.StateCallback mStateCallback
-            = new CameraDevice.StateCallback() {
+    private final CameraDevice.StateCallback mStateCallback = new CameraDevice.StateCallback() {
+
         @Override
         public void onOpened(@NonNull CameraDevice cameraDevice) {
             // カメラが開かれ、プレビューセッションが開始できる状態になった
@@ -202,31 +216,28 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
                 activity.finish();
             }
         }
+
     };
 
     // プレビューのセッションを作る
-    
     private void createCameraPreviewSession() {
         try {
             SurfaceTexture texture = mTextureView.getSurfaceTexture();
 
             // バッファサイズを、プレビューサイズに合わせる
-            texture.setDefaultBufferSize(
-                    mCameraInfo.getPreviewSize().getWidth(),
+            texture.setDefaultBufferSize(mCameraInfo.getPreviewSize().getWidth(),
                     mCameraInfo.getPreviewSize().getHeight());
 
             // プレビューが描画されるSurface
             Surface surface = new Surface(texture);
 
             // プレビュー用のセッションを設定する
-            mCaptureRequestBuilder =
-                    mCameraDevice.createCaptureRequest(
-                            CameraDevice.TEMPLATE_PREVIEW);
+            mCaptureRequestBuilder
+                    = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             mCaptureRequestBuilder.addTarget(surface);
 
             // プレビュー用のセッション生成を要求する
-            mCameraDevice.createCaptureSession(
-                    Arrays.asList(surface, mImageReader.getSurface()),
+            mCameraDevice.createCaptureSession(Arrays.asList(surface, mImageReader.getSurface()),
                     mSessionStateCallback, null);
         } catch (CameraAccessException e) {
             e.printStackTrace();
@@ -235,11 +246,11 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
 
     private final CameraCaptureSession.StateCallback mSessionStateCallback
             = new CameraCaptureSession.StateCallback() {
-        @SuppressLint("NewApi")
+
         @Override
         public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
             // カメラが閉じてしまっていた場合
-            if (mCameraDevice == null) {
+            if (null == mCameraDevice) {
                 return;
             }
 
@@ -260,17 +271,81 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
 
         @Override
         public void onConfigureFailed(@NonNull CameraCaptureSession cameraCaptureSession) {
-
         }
     };
 
-    // 画像が操作可能になったら呼ばれるリスナー
+    // カメラの停止処理を行う
+    private void stopCamera() {
+        // セッションを閉じる
+        if (mCaptureSession != null) {
+            mCaptureSession.close();
+            mCaptureSession = null;
+        }
+
+        // カメラを閉じる
+        if (mCameraDevice != null) {
+            mCameraDevice.close();
+            mCameraDevice = null;
+        }
+
+        // ImageReaderを閉じる
+        if (mImageReader != null) {
+            mImageReader.close();
+            mImageReader = null;
+        }
+
+        // スレッドを止める
+        mBackgroundThread.quitSafely();
+        try {
+            mBackgroundThread.join();
+            mBackgroundThread = null;
+            mBackgroundHandler = null;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.ShutterButton) {
+            // 写真を撮影する
+            takePicture();
+        }
+    }
+
+    // 写真を撮影する
+    private void takePicture() {
+        try {
+            // オートフォーカスをリクエストする
+            mCaptureRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
+                    CameraMetadata.CONTROL_AF_TRIGGER_START);
+
+            // オートフォーカスを実行し、終わったら撮影する
+            mCaptureSession.capture(mCaptureRequestBuilder.build(),
+                    new CameraCaptureSession.CaptureCallback() {
+                        @Override
+                        public void onCaptureCompleted(@NonNull CameraCaptureSession session,
+                                                       @NonNull CaptureRequest request,
+                                                       @NonNull TotalCaptureResult result) {
+                            // 撮影する
+                            captureStillPicture();
+                        }
+                    },
+                    mBackgroundHandler); // 撮影結果の処理が行われるスレッド
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // 画像が操作可能になったら呼ばれるリスナ
     private final ImageReader.OnImageAvailableListener mOnImageAvailableListener
             = new ImageReader.OnImageAvailableListener() {
+
         @Override
-        public void onImageAvailable(ImageReader Reader) {
+        public void onImageAvailable(ImageReader reader) {
             // ImageReaderからImageを取り出す
-            Image image = mImageReader.acquireLatestImage();
+            Image image = reader.acquireLatestImage();
+
             // 描画された画像のbyte列を取り出す
             ByteBuffer buffer = image.getPlanes()[0].getBuffer();
             byte[] data = new byte[buffer.remaining()];
@@ -280,14 +355,14 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
             // 画像ファイルとして保存する
             mBackgroundHandler.post(new PictureSaver(getActivity(), data));
         }
+
     };
 
-    // TextureViewのサイズに合わせてプレビューに補正をかけ
+    // TextureViewのサイズにあわせて、プレビューに補正をかけ、
     // 画面の向きに合わせてプレビューを回転させる
-    
     private void transformTexture(int viewWidth, int viewHeight) {
         Activity activity = getActivity();
-        if (mTextureView == null || mCameraInfo == null || activity == null) {
+        if (mTextureView == null || mCameraInfo == null || activity == null){
             return;
         }
 
@@ -308,68 +383,32 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
         float centerX = viewRect.centerX();
         float centerY = viewRect.centerY();
 
-        if (rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270) {
+        if (Surface.ROTATION_90 == rotation
+                || Surface.ROTATION_270 == rotation) {
+
             // 中心を合わせる
-            bufferRect.offset(centerX - bufferRect.centerX(),
-                    centerY - bufferRect.centerY());
+            bufferRect.offset(centerX - bufferRect.centerX(), centerY - bufferRect.centerY());
 
             // TextureView用の矩形を、プレビュー用の矩形に合わせる
             matrix.setRectToRect(viewRect, bufferRect, Matrix.ScaleToFit.FILL);
 
             // 拡大・縮小率を決定する
             float scale = Math.max(
-                    (float) viewSize.getHeight() /
-                            mCameraInfo.getPictureSize().getHeight(),
-                    (float) viewSize.getWidth() /
-                            mCameraInfo.getPictureSize().getWidth());
+                    (float) viewSize.getHeight() / mCameraInfo.getPictureSize().getHeight(),
+                    (float) viewSize.getWidth() / mCameraInfo.getPictureSize().getWidth());
 
             // 拡大／縮小を行う
             matrix.postScale(scale, scale, centerX, centerY);
             // 回転する
             matrix.postRotate(90 * (rotation - 2), centerX, centerY);
-        } else if (rotation == Surface.ROTATION_180) {
+        } else if (Surface.ROTATION_180 == rotation) {
             matrix.postRotate(180, centerX, centerY);
         }
 
         mTextureView.setTransform(matrix);
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.ShutterButton) {
-            // 写真を撮影する
-            takePicture();
-        }
-    }
-
-    // 写真を撮影する
-    
-    private void takePicture() {
-        try {
-            // オートフォーカスをリクエストする
-            mCaptureRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
-                    CameraMetadata.CONTROL_AF_TRIGGER_START);
-
-            // オートフォーカスを実行し、終わったら撮影する
-            mCaptureSession.capture(mCaptureRequestBuilder.build(),
-                    new CameraCaptureSession.CaptureCallback() {
-                        @Override
-                        public void onCaptureCompleted(
-                                @NonNull CameraCaptureSession session,
-                                @NonNull CaptureRequest request,
-                                @NonNull TotalCaptureResult result) {
-                            // 撮影する
-                            captureStillPicture();
-                        }
-                    },
-                    mBackgroundHandler);    // 撮影結果の処理が行われるスレッド
-        } catch (CameraAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
     // 写真撮影する
-    
     private void captureStillPicture() {
         try {
             final Activity activity = getActivity();
@@ -379,8 +418,8 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
 
             // 撮影用のCaptureRequestを設定する
             final CaptureRequest.Builder captureBuilder =
-                    mCameraDevice.createCaptureRequest(
-                            CameraDevice.TEMPLATE_STILL_CAPTURE);
+                    mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
+
             // キャプチャ結果をImageReaderに渡す
             captureBuilder.addTarget(mImageReader.getSurface());
 
@@ -388,26 +427,26 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
             captureBuilder.set(CaptureRequest.CONTROL_AF_MODE,
                     CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
 
+
             // 端末の回転角
-            int rotation =
-                    activity.getWindowManager().getDefaultDisplay().getRotation();
+            int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
             // カメラセンサーの方向
             int sensorOrientation = mCameraInfo.getSensorOrientation();
 
             // JPEG画像の方向を、カメラセンサーの方向と、端末の方向から計算する
             int jpegRotation = getPictureRotation(rotation, sensorOrientation);
 
-            // JPEG画像の方向を修正する
+
+            // JPEG画像の方向を設定する。
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, jpegRotation);
 
-            // 撮影が終わった時にフォーカスのロックを外すためのコールバック
+            // 撮影が終わったら、フォーカスのロックを外すためのコールバック
             CameraCaptureSession.CaptureCallback captureCallback
                     = new CameraCaptureSession.CaptureCallback() {
                 @Override
-                public void onCaptureCompleted(
-                        @NonNull CameraCaptureSession session,
-                        @NonNull CaptureRequest request,
-                        @NonNull TotalCaptureResult result) {
+                public void onCaptureCompleted(@NonNull CameraCaptureSession session,
+                                               @NonNull CaptureRequest request,
+                                               @NonNull TotalCaptureResult result) {
                     unlockFocus();
                 }
             };
@@ -419,23 +458,10 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
             mCaptureSession.stopRepeating();
             // 撮影する
             mCaptureSession.capture(captureBuilder.build(), captureCallback, null);
+
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
-    }
-
-    public int getPictureRotation(int deviceRotation, int sensorOrientation) {
-        switch (deviceRotation) {
-            case Surface.ROTATION_0:
-                return sensorOrientation;
-            case Surface.ROTATION_90:
-                return (sensorOrientation + 270) % 360;
-            case Surface.ROTATION_180:
-                return (sensorOrientation + 180) % 360;
-            case Surface.ROTATION_270:
-                return (sensorOrientation + 90) % 360;
-        }
-        return 0;
     }
 
     private void unlockFocus() {
@@ -443,12 +469,35 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
             // オートフォーカストリガーを外す
             mCaptureRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
                     CameraMetadata.CONTROL_AF_TRIGGER_CANCEL);
-            mCaptureSession.capture(mCaptureRequestBuilder.build(), null, mBackgroundHandler);
+            mCaptureSession.capture(mCaptureRequestBuilder.build(), null,
+                    mBackgroundHandler);
 
             // プレビューに戻る
-            mCaptureSession.setRepeatingRequest(mCaptureRequest, null, mBackgroundHandler);
+            mCaptureSession.setRepeatingRequest(mCaptureRequest, null,
+                    mBackgroundHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
     }
+
+    public int getPictureRotation(int deviceRotation, int sensorOrientation) {
+
+        switch (deviceRotation) {
+            case Surface.ROTATION_0:
+                return sensorOrientation;
+
+            case Surface.ROTATION_90:
+                return (sensorOrientation + 270) % 360;
+
+            case Surface.ROTATION_180:
+                return (sensorOrientation + 180) % 360;
+
+            case Surface.ROTATION_270:
+                return (sensorOrientation + 90) % 360;
+        }
+
+        return 0;
+    }
+
+
 }
