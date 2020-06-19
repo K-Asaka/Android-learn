@@ -10,7 +10,7 @@ import com.google.android.gms.location.LocationResult;
 import java.util.Date;
 import java.util.List;
 
-class PlaceStoreService extends IntentService {
+public class PlaceStoreService extends IntentService {
     private static final String TAG = "PlaceStoreService";
 
     public PlaceStoreService() {

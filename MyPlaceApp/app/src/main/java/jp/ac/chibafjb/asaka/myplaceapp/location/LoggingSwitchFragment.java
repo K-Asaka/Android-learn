@@ -32,7 +32,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 import jp.ac.chibafjb.asaka.myplaceapp.R;
 
-class LoggingSwitchFragment extends Fragment
+public class LoggingSwitchFragment extends Fragment
     implements CompoundButton.OnCheckedChangeListener {
 
     // インストールまたはアップデートによってGoogle Play servicesを利用可能にするリクエスト
