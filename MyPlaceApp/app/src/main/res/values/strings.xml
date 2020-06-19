@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">MyPlaceApp</string>
     <string name="switch_logging">位置情報の記録</string>
+    <string name="button_capture">撮影する</string>
 </resources>

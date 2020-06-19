@@ -60,6 +60,12 @@ public class PictureFragment extends Fragment {
                 new GridLayoutManager(view.getContext(), 2));
     }
 
+    public void setDate(String dateStr) {
+        getArguments().putString(ARGS_DATE, dateStr);
+        // Loaderを初期化する
+        getLoaderManager().restartLoader(DB_LOADER, getArguments(), mDBLoaderCallback);
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);

@@ -40,7 +40,7 @@ import java.util.Arrays;
 
 import jp.ac.chibafjb.asaka.myplaceapp.R;
 
-class CameraFragment extends Fragment implements View.OnClickListener {
+public class CameraFragment extends Fragment implements View.OnClickListener {
     // パーミッションのリクエストコード
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     // テクスチャビュー
