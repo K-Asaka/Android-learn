@@ -1,4 +1,4 @@
-# flutter_header_futter
+# flutter_header_footer
 
 A new Flutter application.
 
