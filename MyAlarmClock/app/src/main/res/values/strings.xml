@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MyAlarmClock</string>
+    <string name="setAlarm_text">アラームをセットする</string>
+    <string name="cancelAlarm_text">アラームをキャンセルする</string>
+</resources>
